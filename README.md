@@ -1,0 +1,2 @@
+# vize
+Mobil programlama vize 
