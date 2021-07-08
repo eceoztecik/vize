@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:odev/login.dart';
 import 'package:odev/yanmenu.dart';
+
 
 
 class AnaSayfa extends StatefulWidget {
@@ -9,6 +11,7 @@ class AnaSayfa extends StatefulWidget {
 }
 
 class _AnaSayfaState extends State<AnaSayfa> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,23 +45,23 @@ class _AnaSayfaState extends State<AnaSayfa> {
 
 
       body: Column(
-          children : <Widget> [
-      Container(
-      child:Image.asset('assets/images/kitap.jpg'),
-    ),
+        children : <Widget> [
+          Container(
+            child:Image.asset('assets/images/kitap.jpg'),
+          ),
 
-    Text("""
+          Text("""
            
 HOŞGELDİNİZ 
 """ , style: TextStyle(
 
 
-    fontWeight: FontWeight.w900,
-    color: Colors.deepOrange[800],
-    fontSize: 20.0,
+            fontWeight: FontWeight.w900,
+            color: Colors.deepOrange[800],
+            fontSize: 20.0,
 
-    ),),
-    Text("""     Kitapların içinde kaybolacağınız bir dünya!
+          ),),
+          Text("""     Kitapların içinde kaybolacağınız bir dünya!
             
             
       Okuman Gerek ile merak ettiğiniz kitaplar
@@ -73,37 +76,31 @@ HOŞGELDİNİZ
             
 
                 """ ,style: TextStyle(
-    fontWeight: FontWeight.w800,
-    color: Colors.black,
-    fontSize: 19.0,
-    ), ),
-    RaisedButton(
-    child: Text(
-    "Giriş Yap",
-    style: TextStyle(
-    fontSize: 20,
-    ),
-
-    ),
-    onPressed: () {
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) {
-    return Login();
-        },
+            fontWeight: FontWeight.w800,
+            color: Colors.black,
+            fontSize: 19.0,
+          ), ),
+          ElevatedButton(
+            child: Text(
+              "Giriş Yap",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+            onPressed: () async {
+              debugPrint("Login");
+             await _firestore.collection("final").doc("ece").set({"e-mail":"ece@hotmail.com"});
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return Login();
+                },
+              ),
+              );
+            },
+          ),
+        ],
       ),
+      drawer: YanMenu(),
     );
-    },
-
-
-    ),
-
-
-    ],
-
-    ),
-
-
-    drawer: YanMenu(),
-    );
-    }
   }
+}

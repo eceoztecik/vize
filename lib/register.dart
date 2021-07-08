@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:odev/anasayfa.dart';
-import 'package:odev/register.dart';
+import 'package:odev/login.dart';
 import 'package:odev/service/auth_service.dart';
 
-class Login extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
+
   @override
-  _LoginState createState() => _LoginState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
 
   AuthService _authService = AuthService();
   String username;
   String password;
   final formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +28,27 @@ class _LoginState extends State<Login> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              TextFormField(
+                controller: _nameController,
+                autovalidate: true,
+                decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
+                    labelText: "Kullanıcı Adı",
+                    labelStyle: TextStyle(color: Colors.black),
+                    border: OutlineInputBorder()),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return "Kullanıcı Adınızı Giriniz";
+                  } else {
+                    return null;
+                  }
+                },
+                onSaved: (value) {
+                  username = value;
+                },
+              ),
               TextFormField(
                 controller: _emailController,
                 autovalidate: true,
@@ -66,18 +88,18 @@ class _LoginState extends State<Login> {
                   }
                 },
                 onSaved: (value) {
-                 password = value;
+                  password = value;
                 },
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  MaterialButton(child: Text("Üye Ol"), onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()));}),
+                  MaterialButton(child: Text("Üye Ol"), onPressed: () {}),
                   MaterialButton(
                       child: Text("Şifremi Unuttum"), onPressed: () {})
                 ],
               ),
-              loginButton()
+              registerButton()
             ],
           ),
         ),
@@ -85,27 +107,19 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget loginButton() => RaisedButton(
-        child: Text("Giriş Yap"),
-        onPressed: () {
-          _authService.signIn(_emailController.text, _passwordController.text).then((value) {
-            return Navigator.push(context, MaterialPageRoute(builder: (context) => AnaSayfa()));
-          });
-          /*
-          if ( formKey.currentState.validate()) {
-            formKey.currentState.save();
-           if (username == "ece" && password == "ece") {
-             debugPrint("Giriş Başarılı");
-           } else {
-             showDialog(context: context, builder: (BuildContext context){
-               return AlertDialog(
-                 title: Text("Hatalı Giriş!"),
-                 content: Text("Giriş Bilgileriniz Hatalı"),
-               );
-             }
-             );
-           }
-          }*/
-        },
-      );
+  Widget registerButton() => RaisedButton(
+    child: Text("Giriş Yap"),
+    onPressed: () {
+      _authService
+          .createPerson(
+          _nameController.text,
+          _emailController.text,
+          _passwordController.text)
+          .then((value) {
+        return Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Login()));
+      });
+      });
 }
